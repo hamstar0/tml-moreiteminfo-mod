@@ -17,9 +17,9 @@ namespace MoreItemInfo {
 		public int RecipesPerLine { get; set; } = 10;
 
 
-		[Range( 1, 100 )]
-		[DefaultValue( 10 )]
-		public int MaxRecipesToList { get; set; } = 100;
+		[Range( 1, 200 )]
+		[DefaultValue( 50 )]
+		public int MaxRecipesToList { get; set; } = 50;
 
 		////
 
