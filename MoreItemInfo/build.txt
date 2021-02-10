@@ -1,6 +1,6 @@
 displayName = More Item Info
 author = hamstar
-version = 1.0.0
+version = 1.1.0
 side = client
 buildIgnore = *.csproj, *.user, *.bat, obj\*, bin\*, .vs\*, .git\*
 homepage = https://github.com/hamstar0/tml-moreiteminfo-mod
