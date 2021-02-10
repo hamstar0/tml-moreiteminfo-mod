@@ -1,0 +1,3 @@
+Lists recipes using a given item and displays its sell value. Configurable.
+
+https://github.com/hamstar0/tml-moreiteminfo-mod
