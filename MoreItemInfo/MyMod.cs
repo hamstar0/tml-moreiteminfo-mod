@@ -18,7 +18,9 @@ namespace MoreItemInfo {
 
 		////////////////
 
-		internal IDictionary<int, ISet<int>> ItemRecipeResults { get; private set; } = new Dictionary<int, ISet<int>>();
+		internal IDictionary<int, ISet<int>> ItemCraftedFrom { get; private set; } = new Dictionary<int, ISet<int>>();
+
+		internal IDictionary<int, ISet<Recipe>> ItemCraftsInto { get; private set; } = new Dictionary<int, ISet<Recipe>>();
 
 
 

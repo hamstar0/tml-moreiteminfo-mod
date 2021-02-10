@@ -12,13 +12,22 @@ namespace MoreItemInfo {
 
 		////
 
+		[Range( 1, 100 )]
 		[DefaultValue( 10 )]
 		public int RecipesPerLine { get; set; } = 10;
 
 
-		[DefaultValue( 100 )]
+		[Range( 1, 100 )]
+		[DefaultValue( 10 )]
 		public int MaxRecipesToList { get; set; } = 100;
 
+		////
+
+		[DefaultValue( true )]
+		public bool ShowRecipesCraftingIntoItem { get; set; } = true;
+
+		[DefaultValue( true )]
+		public bool ShowRecipesCraftedByItem { get; set; } = true;
 
 		[DefaultValue( true )]
 		public bool ShowPricePerItem { get; set; } = true;

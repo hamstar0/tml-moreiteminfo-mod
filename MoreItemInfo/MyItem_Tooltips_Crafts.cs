@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
-using MoreItemInfo.Libraries.Items;
 
 
 namespace MoreItemInfo {
 	partial class MoreItemInfoItem : GlobalItem {
-		public static ISet<int> GetRecipeResults( int itemType ) {
+		public static ISet<int> GetRecipesCraftedByItem( int itemType ) {
 			var mymod = MoreItemInfoMod.Instance;
 			
-			if( !mymod.ItemRecipeResults.ContainsKey(itemType) ) {
-				mymod.ItemRecipeResults[itemType] = new HashSet<int>(
+			if( !mymod.ItemCraftedFrom.ContainsKey(itemType) ) {
+				mymod.ItemCraftedFrom[itemType] = new HashSet<int>(
 					Main.recipe.Where(
 						r => r.requiredItem.Any(
 							i => i?.active == true && i.type == itemType
@@ -21,19 +20,23 @@ namespace MoreItemInfo {
 				);
 			}
 
-			return mymod.ItemRecipeResults[itemType];
+			return mymod.ItemCraftedFrom[itemType];
 		}
 
 
 
 		////////////////
 
-		public void AddIngredientsListTip( ISet<int> itemTypes, List<TooltipLine> tooltips ) {
+		public void AddCraftsIntoListTip( ISet<int> itemTypes, List<TooltipLine> tooltips ) {
 			if( itemTypes.Count == 0 ) {
 				return;
 			}
 
 			var config = ModContent.GetInstance<MoreItemInfoConfig>();
+			if( !config.ShowRecipesCraftingIntoItem ) {
+				return;
+			}
+
 			int codesPerLine = config.RecipesPerLine;
 			int maxCodes = Math.Min( itemTypes.Count, config.MaxRecipesToList );
 			int[] itemCodes = itemTypes.ToArray();
@@ -63,14 +66,14 @@ namespace MoreItemInfo {
 				string text = i == 0
 					? "Crafts: "+craftsLines[i]
 					: craftsLines[i];
-				var tip = new TooltipLine( this.mod, "MoreItemInfoTip_" + i, text );
+				var tip = new TooltipLine( this.mod, "MoreItemInfoCraftsInto_" + i, text );
 
 				tooltips.Add( tip );
 			}
 
 			if( maxCodes < itemTypes.Count ) {
 				int remaining = itemTypes.Count - maxCodes;
-				var tip = new TooltipLine( this.mod, "MoreItemInfoTip_Post", "...and "+remaining+" more" );
+				var tip = new TooltipLine( this.mod, "MoreItemInfoCraftsInto_Post", "...and "+remaining+" more" );
 
 				tooltips.Add( tip );
 			}
