@@ -38,7 +38,7 @@ namespace MoreItemInfo {
 			}
 
 			int codesPerLine = config.RecipesPerLine;
-			int maxCodes = Math.Min( itemTypes.Count, config.MaxRecipesToList );
+			int maxCodes = Math.Min( itemTypes.Count, config.MaxRecipeResultsToList );
 			int[] itemCodes = itemTypes.ToArray();
 
 			int lineCount = (int)Math.Ceiling( (double)(maxCodes+2) / (double)codesPerLine );
