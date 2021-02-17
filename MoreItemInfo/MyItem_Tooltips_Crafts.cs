@@ -7,28 +7,27 @@ using Terraria.ModLoader;
 
 namespace MoreItemInfo {
 	partial class MoreItemInfoItem : GlobalItem {
-		public static IDictionary<int, bool> GetRecipesCraftedByItem( int itemType ) {
+		public static ISet<int> GetRecipesCraftedByItem( int itemType ) {
 			var mymod = MoreItemInfoMod.Instance;
 			if( mymod.ItemCraftedFrom.ContainsKey( itemType ) ) {
 				return mymod.ItemCraftedFrom[itemType];
 			}
 
-			IEnumerable<(int recipeItemType, bool)> recipes = Main.recipe.Where(
+			IEnumerable<int> recipes = Main.recipe.Where(
 				r => r.requiredItem.Any(
 					i => i?.active == true && i.type == itemType
 				)
-			).Select( r => (r.createItem.type, false) );
+			).Select( r => r.createItem.type );
 
-			mymod.ItemCraftedFrom[itemType] = recipes.ToDictionary(
-				kv => kv.recipeItemType,
-				kv => false
-			);
+			mymod.ItemCraftedFrom[itemType] = new HashSet<int>( recipes );
 
 			IEnumerable<RecipeGroup> grpsOfItem = RecipeGroup.recipeGroups.Values
 				.Where( grp => grp.ContainsItem(itemType) );
+//MoreItemInfoMod.Instance.Logger.Info( "grps of "+ItemID.GetUniqueKey(itemType)+": "
+//	+string.Join(", ", grpsOfItem.Select(g=>ItemID.GetUniqueKey(rg.ValidItems[g.IconicItemIndex])) ) );
 
 			foreach( RecipeGroup rg in grpsOfItem ) {
-				int rgItemType = rg.IconicItemIndex;
+				int rgItemType = rg.ValidItems[ rg.IconicItemIndex ];
 
 				IEnumerable<int> rgCraftedFrom = Main.recipe.Where(
 					r => r.requiredItem.Any(
@@ -36,9 +35,7 @@ namespace MoreItemInfo {
 					)
 				).Select( r => r.createItem.type );
 
-				foreach( int recipeItemType in rgCraftedFrom ) {
-					mymod.ItemCraftedFrom[itemType][recipeItemType] = true;
-				}
+				mymod.ItemCraftedFrom[itemType].UnionWith( rgCraftedFrom );
 			}
 
 			return mymod.ItemCraftedFrom[itemType];
@@ -48,8 +45,9 @@ namespace MoreItemInfo {
 
 		////////////////
 
-		public void AddCraftsIntoListTip( ISet<(int recipeItemType, bool isRecipeGroup)> itemTypes, List<TooltipLine> tooltips ) {
-			if( itemTypes.Count == 0 ) {
+		public void AddCraftsIntoListTip( ISet<int> recipeItemTypes, List<TooltipLine> tooltips ) {
+			int recipeCount = recipeItemTypes.Count;
+			if( recipeCount == 0 ) {
 				return;
 			}
 
@@ -59,8 +57,8 @@ namespace MoreItemInfo {
 			}
 
 			int codesPerLine = config.RecipesPerLine;
-			int maxCodes = Math.Min( itemTypes.Count, config.MaxRecipeResultsToList );
-			(int recipeItemType, bool isRecipeGroup)[] itemCodes = itemTypes.ToArray();
+			int maxCodes = Math.Min( recipeCount, config.MaxRecipeResultsToList );
+			int[] itemCodes = recipeItemTypes.ToArray();
 
 			int lineCount = (int)Math.Ceiling( (double)(maxCodes+2) / (double)codesPerLine );
 			string[] craftsLines = new string[ lineCount ];
@@ -78,11 +76,7 @@ namespace MoreItemInfo {
 				craftsLines[line] = "";
 
 				for( int i=0; i<max; i++ ) {
-					if( itemCodes[idx].isRecipeGroup ) {
-						craftsLines[line] += "Any [i/s1:" + itemCodes[idx] + "] ";
-					} else {
-						craftsLines[line] += "[i/s1:" + itemCodes[idx] + "] ";
-					}
+					craftsLines[line] += "[i/s1:" + itemCodes[idx] + "] ";
 					idx++;
 				}
 			}
@@ -96,8 +90,8 @@ namespace MoreItemInfo {
 				tooltips.Add( tip );
 			}
 
-			if( maxCodes < itemTypes.Count ) {
-				int remaining = itemTypes.Count - maxCodes;
+			if( maxCodes < recipeCount ) {
+				int remaining = recipeCount - maxCodes;
 				var tip = new TooltipLine( this.mod, "MoreItemInfoCraftsInto_Post", "...and "+remaining+" more" );
 
 				tooltips.Add( tip );
