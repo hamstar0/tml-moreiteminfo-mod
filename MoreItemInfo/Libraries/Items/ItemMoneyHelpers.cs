@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.Localization;
 using MoreItemInfo.Libraries.Misc;
-using Terraria;
+
 
 namespace MoreItemInfo.Libraries.Items {
 	public class ItemMoneyHelpers {
@@ -62,33 +63,24 @@ namespace MoreItemInfo.Libraries.Items {
 		/// <param name="money"></param>
 		/// <param name="addDenom"></param>
 		/// <param name="addColors"></param>
-		/// <param name="addColorPulse"></param>
+		/// <param name="addColorPulse">Adds Terraria's standard text pulsing to rendered colors.</param>
 		/// <returns></returns>
-		public static string[] RenderMoneyDenominations( long money, bool addDenom, bool addColors, bool addColorPulse=true ) {
-			var denoms = GetMoneyDenominations( money );
-			var rendered = new List<string>( 4 );
+		public static string[] RenderMoneyDenominations( long money, bool addDenom, bool addColors, bool addColorPulse = true ) {
 			float colorPulse = addColorPulse
-				? ((float)Main.mouseTextColor / 255f)
+				? ( (float)Main.mouseTextColor / 255f )
 				: 1f;
 
-			if( denoms.copper != 0 ) {
-				string render = denoms.copper.ToString();
+			var denoms = ItemMoneyHelpers.GetMoneyDenominations( money );
+			var rendered = new List<string>( 4 );
+
+			if( denoms.platinum != 0 ) {
+				string render = denoms.platinum.ToString();
 				if( addDenom ) {
-					render += " " + Language.GetTextValue( "Currency.Copper" );    //Lang.inter[18];
+					render += " " + Language.GetTextValue( "Currency.Platinum" );    //Lang.inter[15];
 				}
 				if( addColors ) {
-					string colorHex = MiscHelpers.RenderColorHex( ItemMoneyHelpers.CopperCoinColor * colorPulse );
-					render = "[c/" + colorHex + ":" + render + "]";
-				}
-				rendered.Add( render );
-			}
-			if( denoms.silver != 0 ) {
-				string render = denoms.silver.ToString();
-				if( addDenom ) {
-					render += " " + Language.GetTextValue( "Currency.Silver" );    //Lang.inter[17];
-				}
-				if( addColors ) {
-					string colorHex = MiscHelpers.RenderColorHex( ItemMoneyHelpers.SilverCoinColor * colorPulse );
+					Color color = ItemMoneyHelpers.PlatinumCoinColor * colorPulse;
+					string colorHex = MiscHelpers.RenderColorHex( color );
 					render = "[c/" + colorHex + ":" + render + "]";
 				}
 				rendered.Add( render );
@@ -99,18 +91,32 @@ namespace MoreItemInfo.Libraries.Items {
 					render += " " + Language.GetTextValue( "Currency.Gold" );    //Lang.inter[16];
 				}
 				if( addColors ) {
-					string colorHex = MiscHelpers.RenderColorHex( ItemMoneyHelpers.GoldCoinColor * colorPulse );
+					Color color = ItemMoneyHelpers.GoldCoinColor * colorPulse;
+					string colorHex = MiscHelpers.RenderColorHex( color );
 					render = "[c/" + colorHex + ":" + render + "]";
 				}
 				rendered.Add( render );
 			}
-			if( denoms.platinum != 0 ) {
-				string render = denoms.platinum.ToString();
+			if( denoms.silver != 0 ) {
+				string render = denoms.silver.ToString();
 				if( addDenom ) {
-					render += " " + Language.GetTextValue( "Currency.Platinum" );    //Lang.inter[15];
+					render += " " + Language.GetTextValue( "Currency.Silver" );    //Lang.inter[17];
 				}
 				if( addColors ) {
-					string colorHex = MiscHelpers.RenderColorHex( ItemMoneyHelpers.PlatinumCoinColor * colorPulse );
+					Color color = ItemMoneyHelpers.SilverCoinColor * colorPulse;
+					string colorHex = MiscHelpers.RenderColorHex( color );
+					render = "[c/" + colorHex + ":" + render + "]";
+				}
+				rendered.Add( render );
+			}
+			if( denoms.copper != 0 ) {
+				string render = denoms.copper.ToString();
+				if( addDenom ) {
+					render += " " + Language.GetTextValue( "Currency.Copper" );    //Lang.inter[18];
+				}
+				if( addColors ) {
+					Color color = ItemMoneyHelpers.CopperCoinColor * colorPulse;
+					string colorHex = MiscHelpers.RenderColorHex( color );
 					render = "[c/" + colorHex + ":" + render + "]";
 				}
 				rendered.Add( render );
