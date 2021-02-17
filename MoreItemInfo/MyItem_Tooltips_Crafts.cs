@@ -7,17 +7,38 @@ using Terraria.ModLoader;
 
 namespace MoreItemInfo {
 	partial class MoreItemInfoItem : GlobalItem {
-		public static ISet<int> GetRecipesCraftedByItem( int itemType ) {
+		public static IDictionary<int, bool> GetRecipesCraftedByItem( int itemType ) {
 			var mymod = MoreItemInfoMod.Instance;
-			
-			if( !mymod.ItemCraftedFrom.ContainsKey(itemType) ) {
-				mymod.ItemCraftedFrom[itemType] = new HashSet<int>(
-					Main.recipe.Where(
-						r => r.requiredItem.Any(
-							i => i?.active == true && i.type == itemType
-						)
-					).Select( r => r.createItem.type )
-				);
+			if( mymod.ItemCraftedFrom.ContainsKey( itemType ) ) {
+				return mymod.ItemCraftedFrom[itemType];
+			}
+
+			IEnumerable<(int recipeItemType, bool)> recipes = Main.recipe.Where(
+				r => r.requiredItem.Any(
+					i => i?.active == true && i.type == itemType
+				)
+			).Select( r => (r.createItem.type, false) );
+
+			mymod.ItemCraftedFrom[itemType] = recipes.ToDictionary(
+				kv => kv.recipeItemType,
+				kv => false
+			);
+
+			IEnumerable<RecipeGroup> grpsOfItem = RecipeGroup.recipeGroups.Values
+				.Where( grp => grp.ContainsItem(itemType) );
+
+			foreach( RecipeGroup rg in grpsOfItem ) {
+				int rgItemType = rg.IconicItemIndex;
+
+				IEnumerable<int> rgCraftedFrom = Main.recipe.Where(
+					r => r.requiredItem.Any(
+						i => i?.active == true && i.type == rgItemType
+					)
+				).Select( r => r.createItem.type );
+
+				foreach( int recipeItemType in rgCraftedFrom ) {
+					mymod.ItemCraftedFrom[itemType][recipeItemType] = true;
+				}
 			}
 
 			return mymod.ItemCraftedFrom[itemType];
@@ -27,7 +48,7 @@ namespace MoreItemInfo {
 
 		////////////////
 
-		public void AddCraftsIntoListTip( ISet<int> itemTypes, List<TooltipLine> tooltips ) {
+		public void AddCraftsIntoListTip( ISet<(int recipeItemType, bool isRecipeGroup)> itemTypes, List<TooltipLine> tooltips ) {
 			if( itemTypes.Count == 0 ) {
 				return;
 			}
@@ -39,7 +60,7 @@ namespace MoreItemInfo {
 
 			int codesPerLine = config.RecipesPerLine;
 			int maxCodes = Math.Min( itemTypes.Count, config.MaxRecipeResultsToList );
-			int[] itemCodes = itemTypes.ToArray();
+			(int recipeItemType, bool isRecipeGroup)[] itemCodes = itemTypes.ToArray();
 
 			int lineCount = (int)Math.Ceiling( (double)(maxCodes+2) / (double)codesPerLine );
 			string[] craftsLines = new string[ lineCount ];
@@ -57,7 +78,11 @@ namespace MoreItemInfo {
 				craftsLines[line] = "";
 
 				for( int i=0; i<max; i++ ) {
-					craftsLines[line] += "[i/s1:" + itemCodes[idx] + "] ";
+					if( itemCodes[idx].isRecipeGroup ) {
+						craftsLines[line] += "Any [i/s1:" + itemCodes[idx] + "] ";
+					} else {
+						craftsLines[line] += "[i/s1:" + itemCodes[idx] + "] ";
+					}
 					idx++;
 				}
 			}

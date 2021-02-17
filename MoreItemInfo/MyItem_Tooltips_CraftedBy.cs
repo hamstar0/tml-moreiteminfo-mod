@@ -9,12 +9,13 @@ namespace MoreItemInfo {
 	partial class MoreItemInfoItem : GlobalItem {
 		public static ISet<Recipe> GetRecipesCraftingIntoItem( int itemType ) {
 			var mymod = MoreItemInfoMod.Instance;
-			
-			if( !mymod.ItemCraftsInto.ContainsKey(itemType) ) {
-				mymod.ItemCraftsInto[ itemType ] = new HashSet<Recipe>(
-					Main.recipe.Where( r => r.createItem.type == itemType )
-				);
+			if( mymod.ItemCraftsInto.ContainsKey(itemType) ) {
+				return mymod.ItemCraftsInto[itemType];
 			}
+
+			mymod.ItemCraftsInto[ itemType ] = new HashSet<Recipe>(
+				Main.recipe.Where( r => r.createItem.type == itemType )
+			);
 
 			return mymod.ItemCraftsInto[itemType];
 		}
