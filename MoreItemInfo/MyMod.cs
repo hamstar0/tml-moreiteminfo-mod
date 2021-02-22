@@ -22,6 +22,8 @@ namespace MoreItemInfo {
 
 		internal IDictionary<int, ISet<Recipe>> ItemCraftsInto { get; private set; } = new Dictionary<int, ISet<Recipe>>();
 
+		internal ModHotKey ToggleItemInfo { get; private set; }
+
 
 
 		////////////////
@@ -32,6 +34,8 @@ namespace MoreItemInfo {
 
 		public override void Load() {
 			MoreItemInfoMod.Instance = this;
+
+			this.ToggleItemInfo = this.RegisterHotKey( "Toggle Item Info", "I" );
 		}
 
 		public override void Unload() {
