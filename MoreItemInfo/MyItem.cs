@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 
@@ -12,7 +13,16 @@ namespace MoreItemInfo {
 				return;
 			}
 
-			this.AddPriceTooltip( item, tooltips );
+			switch( item.type ) {
+			case ItemID.CopperCoin:
+			case ItemID.SilverCoin:
+			case ItemID.GoldCoin:
+			case ItemID.PlatinumCoin:
+				break;
+			default:
+				this.AddPriceTooltip( item, tooltips );
+				break;
+			}
 			this.AddCraftsIntoListTip( MoreItemInfoItem.GetRecipesCraftedByItem(item.type), tooltips );
 			this.AddCraftedByListTip( MoreItemInfoItem.GetRecipesCraftingIntoItem(item.type), tooltips );
 		}
