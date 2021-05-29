@@ -7,7 +7,7 @@ using MoreItemInfo.Libraries.Misc;
 
 
 namespace MoreItemInfo.Libraries.Items {
-	public class ItemMoneyHelpers {
+	public class ItemMoneyLibraries {
 		/// <summary></summary>
 		public static Color PlatinumCoinColor { get; } = new Color( 220, 220, 198 );
 
@@ -70,7 +70,7 @@ namespace MoreItemInfo.Libraries.Items {
 				? ( (float)Main.mouseTextColor / 255f )
 				: 1f;
 
-			var denoms = ItemMoneyHelpers.GetMoneyDenominations( money );
+			var denoms = ItemMoneyLibraries.GetMoneyDenominations( money );
 			var rendered = new List<string>( 4 );
 
 			if( denoms.platinum != 0 ) {
@@ -79,7 +79,7 @@ namespace MoreItemInfo.Libraries.Items {
 					render += " " + Language.GetTextValue( "Currency.Platinum" );    //Lang.inter[15];
 				}
 				if( addColors ) {
-					Color color = ItemMoneyHelpers.PlatinumCoinColor * colorPulse;
+					Color color = ItemMoneyLibraries.PlatinumCoinColor * colorPulse;
 					string colorHex = MiscHelpers.RenderColorHex( color );
 					render = "[c/" + colorHex + ":" + render + "]";
 				}
@@ -91,7 +91,7 @@ namespace MoreItemInfo.Libraries.Items {
 					render += " " + Language.GetTextValue( "Currency.Gold" );    //Lang.inter[16];
 				}
 				if( addColors ) {
-					Color color = ItemMoneyHelpers.GoldCoinColor * colorPulse;
+					Color color = ItemMoneyLibraries.GoldCoinColor * colorPulse;
 					string colorHex = MiscHelpers.RenderColorHex( color );
 					render = "[c/" + colorHex + ":" + render + "]";
 				}
@@ -103,7 +103,7 @@ namespace MoreItemInfo.Libraries.Items {
 					render += " " + Language.GetTextValue( "Currency.Silver" );    //Lang.inter[17];
 				}
 				if( addColors ) {
-					Color color = ItemMoneyHelpers.SilverCoinColor * colorPulse;
+					Color color = ItemMoneyLibraries.SilverCoinColor * colorPulse;
 					string colorHex = MiscHelpers.RenderColorHex( color );
 					render = "[c/" + colorHex + ":" + render + "]";
 				}
@@ -115,7 +115,7 @@ namespace MoreItemInfo.Libraries.Items {
 					render += " " + Language.GetTextValue( "Currency.Copper" );    //Lang.inter[18];
 				}
 				if( addColors ) {
-					Color color = ItemMoneyHelpers.CopperCoinColor * colorPulse;
+					Color color = ItemMoneyLibraries.CopperCoinColor * colorPulse;
 					string colorHex = MiscHelpers.RenderColorHex( color );
 					render = "[c/" + colorHex + ":" + render + "]";
 				}

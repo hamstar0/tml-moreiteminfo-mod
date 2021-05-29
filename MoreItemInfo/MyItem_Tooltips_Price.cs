@@ -22,13 +22,13 @@ namespace MoreItemInfo {
 			long unitSellValue = item.value / 5;
 			long stackSellValue = unitSellValue * item.stack;
 
-			string[] renderedSellValueDenoms = ItemMoneyHelpers.RenderMoneyDenominations( stackSellValue, true, true );
+			string[] renderedSellValueDenoms = ItemMoneyLibraries.RenderMoneyDenominations( stackSellValue, true, true );
 			string renderedSellValue = string.Join( ", ", renderedSellValueDenoms );
 
 			string tipText = "Sells for " + renderedSellValue;
 
 			if( item.stack > 1 ) {
-				string[] renderedUnitSellValueDenoms = ItemMoneyHelpers.RenderMoneyDenominations( unitSellValue, true, true );
+				string[] renderedUnitSellValueDenoms = ItemMoneyLibraries.RenderMoneyDenominations( unitSellValue, true, true );
 				for( int i = 0; i < renderedUnitSellValueDenoms.Length; i++ ) {
 					string[] segs = renderedUnitSellValueDenoms[i].Split( ' ' );
 					renderedUnitSellValueDenoms[i] = segs[0] + segs[1][0] + "]";
