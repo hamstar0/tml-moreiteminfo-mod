@@ -14,7 +14,7 @@ namespace MoreItemInfo {
 			}
 
 			mymod.ItemCraftsInto[ itemType ] = new HashSet<Recipe>(
-				Main.recipe.Where( r => r.createItem.type == itemType )
+				Main.recipe.Where( r => r.createItem.type == itemType && RecipeHooks.RecipeAvailable(r) )
 			);
 
 			return mymod.ItemCraftsInto[itemType];

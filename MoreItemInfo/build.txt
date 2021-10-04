@@ -1,6 +1,6 @@
 displayName = More Item Info
 author = hamstar
-version = 1.3.2
+version = 1.4.0
 side = client
 buildIgnore = *.csproj, *.user, *.bat, obj\*, bin\*, .vs\*, .git\*
 homepage = https://forums.terraria.org/index.php?threads/more-item-info-adds-tooltips-for-recipes-price-etc.103013/

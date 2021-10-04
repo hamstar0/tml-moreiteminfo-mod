@@ -13,30 +13,49 @@ namespace MoreItemInfo {
 				return mymod.ItemCraftedFrom[itemType];
 			}
 
+			//
+
 			IEnumerable<int> recipes = Main.recipe.Where(
-				r => r.requiredItem.Any(
-					i => i?.active == true && i.type == itemType
-				)
+				r => {
+					if( !RecipeHooks.RecipeAvailable(r) ) {
+						return false;
+					}
+					return r.requiredItem.Any(
+						i => i?.active == true && i.type == itemType
+					);
+				}
 			).Select( r => r.createItem.type );
 
 			mymod.ItemCraftedFrom[itemType] = new HashSet<int>( recipes );
+
+			//
 
 			IEnumerable<RecipeGroup> grpsOfItem = RecipeGroup.recipeGroups.Values
 				.Where( grp => grp.ContainsItem(itemType) );
 //MoreItemInfoMod.Instance.Logger.Info( "grps of "+ItemID.GetUniqueKey(itemType)+": "
 //	+string.Join(", ", grpsOfItem.Select(g=>ItemID.GetUniqueKey(rg.ValidItems[g.IconicItemIndex])) ) );
 
+			//
+
 			foreach( RecipeGroup rg in grpsOfItem ) {
 				int rgItemType = rg.ValidItems[ rg.IconicItemIndex ];
 
 				IEnumerable<int> rgCraftedFrom = Main.recipe.Where(
-					r => r.requiredItem.Any(
-						i => i?.active == true && i.type == rgItemType
-					)
+					r => {
+						if( !RecipeHooks.RecipeAvailable(r) ) {
+							return false;
+						}
+						return r.requiredItem.Any(
+							i => i?.active == true && i.type == rgItemType
+						);
+					}
 				).Select( r => r.createItem.type );
 
-				mymod.ItemCraftedFrom[itemType].UnionWith( rgCraftedFrom );
+				mymod.ItemCraftedFrom[itemType]
+					.UnionWith( rgCraftedFrom );
 			}
+
+			//
 
 			return mymod.ItemCraftedFrom[itemType];
 		}
